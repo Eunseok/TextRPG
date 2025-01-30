@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextRPG", "TextRPG\TextRPG.csproj", "{45854F95-9606-4F2C-A259-F9B80994A024}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{DCA80155-10C1-40BA-98FE-3D85FC62DFB6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{45854F95-9606-4F2C-A259-F9B80994A024}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45854F95-9606-4F2C-A259-F9B80994A024}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45854F95-9606-4F2C-A259-F9B80994A024}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCA80155-10C1-40BA-98FE-3D85FC62DFB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCA80155-10C1-40BA-98FE-3D85FC62DFB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCA80155-10C1-40BA-98FE-3D85FC62DFB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCA80155-10C1-40BA-98FE-3D85FC62DFB6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
