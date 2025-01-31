@@ -52,13 +52,13 @@ public class UIManager
         }
     }
 
-    private void ShowStatus()
+    private void ShowStatus() //스탯 보기
     {
         Console.Clear();
         Utility.PrintColorLine("상태 보기", ConsoleColor.Yellow);
         Console.WriteLine("캐릭터의 정보가 표시됩니다.\n");
 
-        Console.WriteLine($"이름: {player.Name}\n직업: {player.Job}\n레벨: {player.Level}");
+        Console.WriteLine($"{player.Name}: ({player.Job})\nLv: {player.Level}");
         Console.Write($"공격력: {player.Stats.Atk}");
         if (player.AddStats.Atk > 0)
             Utility.PrintColor($" +({player.AddStats.Atk})", ConsoleColor.Yellow);
@@ -75,7 +75,7 @@ public class UIManager
         MainScene();
     }
 
-    private void ShowInventory()
+    private void ShowInventory() // 인벤토리
     {
         Console.Clear();
         Utility.PrintColorLine("인벤토리 - 장착관리", ConsoleColor.Yellow);
@@ -104,7 +104,7 @@ public class UIManager
         }
     }
 
-    private void ShowShop(bool choose = false, bool buy = false)
+    private void ShowShop(string info = "") //상점
     {
         Console.Clear();
         Utility.PrintColorLine("상점", ConsoleColor.Yellow);
@@ -114,12 +114,10 @@ public class UIManager
         Utility.PrintColorLine($"{player.Gold} G\n", ConsoleColor.Yellow);
 
         int index = 0;
-
         foreach (Item item in ShopInventory)
         {
             Console.Write("- ");
-            if (choose)
-                Utility.PrintColor($"{index + 1}. ", ConsoleColor.Magenta);
+            Utility.PrintColor($"{index + 1}. ", ConsoleColor.Magenta);
             Console.Write(item);
             if (player.Inventory.Find(x => x.Id == item.Id) != null)
                 Console.WriteLine(" [구매완료]");
@@ -131,49 +129,124 @@ public class UIManager
         }
 
         Console.WriteLine();
-        if (!choose)
-        {
-            Utility.PrintColorLine("1. 아이템 구매", ConsoleColor.Magenta);
-            Utility.PrintColorLine("0. 나가기\n", ConsoleColor.Magenta);
-            if (buy)
-                Utility.InfoMessage("\n구매를 완료 하였습니다.", ConsoleColor.Blue);
-            if (Utility.Confirm(1, 0) == 1)
-                ShowShop(true);
-            else
-                MainScene();
-        }
-        else
-        {
-            Utility.PrintColorLine("구매하실 아이템을 선택하세요.\n", ConsoleColor.Blue);
+        Utility.PrintColorLine("1. 아이템 구매", ConsoleColor.Magenta);
+        Utility.PrintColorLine("2. 아이템 판매", ConsoleColor.Magenta);
+        Utility.PrintColorLine("0. 나가기\n", ConsoleColor.Magenta);
 
-            Utility.PrintColorLine("0. 취소\n", ConsoleColor.Red);
-            while (true)
+        if (!string.IsNullOrEmpty(info))
+            Utility.InfoMessage("\n" + info, ConsoleColor.Blue);
+        switch (Utility.Confirm(2, 0))
+        {
+            case 0:
+                MainScene();
+                break;
+            case 1:
+                ShowShopPurchase();
+                break;
+            case 2:
+                ShowShopSell();
+                break;
+        }
+
+        if (Utility.Confirm(2, 0) == 1)
+            ShowShopPurchase();
+        else
+            MainScene();
+    }
+
+    private void ShowShopPurchase() //상점 구매
+    {
+        Console.Clear();
+        Utility.PrintColorLine("상점 - 아이템 구매", ConsoleColor.Yellow);
+        Console.WriteLine("구매하실 아이템을 선택하세요.\n");
+
+        int index = 0;
+        foreach (Item item in ShopInventory)
+        {
+            Console.Write("- ");
+            Utility.PrintColor($"{index + 1}. ", ConsoleColor.Magenta);
+            Console.Write(item);
+            if (player.Inventory.Find(x => x.Id == item.Id) != null)
+                Console.WriteLine(" [구매완료]");
+            else if (player.Gold < item.Price)
+                Utility.PrintColorLine($" ({item.Price} G)");
+            else
+                Utility.PrintColorLine($" ({item.Price} G)", ConsoleColor.Yellow);
+            index++;
+        }
+
+        Console.WriteLine();
+
+        Utility.PrintColorLine("0. 취소\n", ConsoleColor.Red);
+
+        while (true)
+        {
+            int input = Utility.Confirm(ShopInventory.Count, 0);
+            if (input == 0)
+                ShowShop();
+            else
             {
-                int input = Utility.Confirm(ShopInventory.Count, 0);
-                if (input == 0)
-                    ShowShop();
+                Item item = ShopInventory[input - 1];
+                if (player.Inventory.Find(x => x.Id == item.Id) != null)
+                {
+                    Utility.InfoMessage("이미 보유한 아이템 입니다.");
+                }
+                else if (player.Gold < item.Price)
+                {
+                    Utility.InfoMessage("보유 골드가 부족합니다.");
+                }
                 else
                 {
-                    Item item = ShopInventory[input - 1];
-                    if (player.Inventory.Find(x => x.Id == item.Id) != null)
-                    {
-                        Utility.InfoMessage("이미 보유한 아이템 입니다..");
-                    }
-                    else if (player.Gold < item.Price)
-                    {
-                        Utility.InfoMessage("보유 골드가 부족합니다.");
-                    }
-                    else
-                    {
-                        player.Gold -= item.Price;
-                        player.Inventory.Add(item);
-                        ShowShop(false, true);
-                        break;
-                    }
+                    player.Gold -= item.Price;
+                    player.Inventory.Add(item);
+                    ShowShop("구매를 완료하였습니다.");
+                    break;
                 }
             }
+        }
+    }
 
-            ShowShop();
+    private void ShowShopSell() //상점 판매
+    {
+        Console.Clear();
+        Utility.PrintColorLine("상점 - 아이템 판매", ConsoleColor.Yellow);
+        if (player.Inventory.Count == 0)
+            Console.WriteLine("보유하신 아이템이 없습니다.");
+        else
+            Console.WriteLine("판매하실 아이템을 선택하세요.\n");
+
+        int index = 0;
+        foreach (Item item in player.Inventory)
+        {
+            Console.Write("- ");
+            Utility.PrintColor($"{index + 1}. ", ConsoleColor.Magenta);
+            Console.Write(item);
+            Utility.PrintColorLine($" (+{(int)(item.Price * 0.85f)} G)", ConsoleColor.Yellow);
+
+            index++;
+        }
+
+
+        Console.WriteLine();
+
+        Utility.PrintColorLine("0. 취소\n", ConsoleColor.Red);
+
+        while (true)
+        {
+            int input = Utility.Confirm(player.Inventory.Count, 0);
+            if (input == 0)
+                ShowShop();
+            else
+            {
+                Item item = player.Inventory[input - 1];
+
+                if (item.IsEquipped)
+                    player.EquipItem(item);
+                player.Gold += (int)(item.Price * 0.85f);
+                player.Inventory.Remove(item);
+                ShowShop($"판매를 완료하였습니다.(+{(int)(item.Price * 0.85f)} G)");
+                break;
+            }
         }
     }
 
