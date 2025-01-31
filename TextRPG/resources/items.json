@@ -1,0 +1,52 @@
+//0 : Armor ,1: Weapon
+[
+  {
+    "Id": 1,
+    "Name": "수련자 갑옷",
+    "Type": 0,
+    "Description": "수련에 도움을 주는 갑옷입니다.",
+    "Effect": 5,
+    "Price" : 1000
+  },
+  {
+    "Id": 2,
+    "Name": "무쇠 값옷",
+    "Type": "Armor",
+    "Description": "무쇠로 만들어져 튼튼한 갑옷입니다.",
+    "Effect": 9,
+    "Price" : 2000
+  },
+  {
+    "Id": 3,
+    "Name": "스파르타의 갑옷",
+    "Type": 0,
+    "Description": "스파르타의 전사들이 사용했다는 전설의 갑옷입니다.",
+    "Effect": 15,
+    "Price": 3500
+  },
+  {
+    "Id": 4,
+    "Name": "낡은 검",
+    "Type": 1,
+    "Description": "쉽게 볼 수 있는 낡은 검 입니다.",
+    "Effect": 2,
+    "Price": 600
+  },
+  {
+    "Id": 5,
+    "Name": "청동 도끼",
+    "Type": 1,
+    "Description": "스파르타의 전사들이 사용했다는 전설의 창입니다.",
+    "Effect": 5,
+    "Price": 1500
+  },
+  {
+    "Id": 6,
+    "Name": "스파르타의 창",
+    "Type": 1,
+    "Description": "스파르타의 전사들이 사용했다는 전설의 창입니다.",
+    "Effect": 7,
+    "Price": 1800
+  }
+]
+
