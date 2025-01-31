@@ -24,6 +24,7 @@ public class Player
     public string Job { get; private set; }
     public int Gold { get;  set; } = 1500;
     public int Level { get; private set; } = 1;
+    public int curHp { get; private set; } = 100;
     public Stats Stats { get; private set; } = new Stats(10, 5, 100);
     public Stats AddStats { get; private set; } = new Stats(0, 0, 0);
     public List<Item> Inventory { get; private set; } = new List<Item>();
@@ -85,4 +86,12 @@ public class Player
                 break;
         }
     }
+    
+    public void recoveryHp(int effect)
+    {
+        curHp += effect;
+        if (curHp > Stats.Hp)
+            curHp = Stats.Hp;
+    }
+    
 }

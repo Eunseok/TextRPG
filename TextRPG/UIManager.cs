@@ -1,11 +1,12 @@
 // UIManager.cs
+
 namespace TextRPG;
 
 public class UIManager
 {
     private Player player;
     private Game game;
-    
+
     public List<Item> ShopInventory { get; set; }
 
     public UIManager(Player player, Game game)
@@ -20,15 +21,16 @@ public class UIManager
         Console.Clear();
         Console.WriteLine("스파르타 마을에 오신 여러분 환영합니다.");
         Console.WriteLine("이곳에서 던전으로 들어가기 전 활동을 할 수 있습니다.\n");
-        
-        string[] menu = { "상태보기", "인벤토리", "상점" };
+
+        string[] menu = { "상태보기", "인벤토리", "상점", "던전입장", "휴식하기" };
         for (int i = 0; i < menu.Length; i++)
         {
             Utility.PrintColor($"{i + 1}. ", ConsoleColor.Magenta);
             Console.WriteLine(menu[i]);
         }
+
         Console.WriteLine();
-        
+
         int choice = Utility.Confirm(menu.Length);
         switch (choice)
         {
@@ -41,26 +43,32 @@ public class UIManager
             case 3:
                 ShowShop();
                 break;
+            case 4:
+                MainScene();
+                break;
+            case 5:
+                ShowRest();
+                break;
         }
     }
 
     private void ShowStatus()
     {
-        Console.Clear(); 
-        Utility.PrintColorLine("상태 보기",ConsoleColor.Yellow);
+        Console.Clear();
+        Utility.PrintColorLine("상태 보기", ConsoleColor.Yellow);
         Console.WriteLine("캐릭터의 정보가 표시됩니다.\n");
-        
+
         Console.WriteLine($"이름: {player.Name}\n직업: {player.Job}\n레벨: {player.Level}");
         Console.Write($"공격력: {player.Stats.Atk}");
-        if(player.AddStats.Atk > 0)
+        if (player.AddStats.Atk > 0)
             Utility.PrintColor($" +({player.AddStats.Atk})", ConsoleColor.Yellow);
         Console.Write($"\n방어력: {player.Stats.Def}");
-        if(player.AddStats.Def > 0)
+        if (player.AddStats.Def > 0)
             Utility.PrintColor($" +({player.AddStats.Def})", ConsoleColor.Yellow);
         Console.Write($"\n체력: {player.Stats.Hp}");
-        if(player.AddStats.Hp > 0)
+        if (player.AddStats.Hp > 0)
             Utility.PrintColor($" +({player.AddStats.Hp})", ConsoleColor.Yellow);
-        
+
         Console.WriteLine("\n");
         Utility.PrintColorLine("0. 나가기\n", ConsoleColor.Magenta);
         Utility.Confirm(0, 0);
@@ -70,9 +78,9 @@ public class UIManager
     private void ShowInventory()
     {
         Console.Clear();
-        Utility.PrintColorLine("인벤토리 - 장착관리",ConsoleColor.Yellow);
+        Utility.PrintColorLine("인벤토리 - 장착관리", ConsoleColor.Yellow);
         Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.\n");
-        
+
         for (int i = 0; i < player.Inventory.Count; i++)
         {
             Utility.PrintColor($"{i + 1}. ", ConsoleColor.Magenta);
@@ -80,8 +88,9 @@ public class UIManager
                 Console.Write("[E] ");
             Console.WriteLine(player.Inventory[i]);
         }
+
         Console.WriteLine();
-        
+
         Utility.PrintColorLine("0. 나가기\n", ConsoleColor.Magenta);
         int input = Utility.Confirm(player.Inventory.Count, 0);
         if (input == 0)
@@ -124,7 +133,6 @@ public class UIManager
         Console.WriteLine();
         if (!choose)
         {
-
             Utility.PrintColorLine("1. 아이템 구매", ConsoleColor.Magenta);
             Utility.PrintColorLine("0. 나가기\n", ConsoleColor.Magenta);
             if (buy)
@@ -137,7 +145,7 @@ public class UIManager
         else
         {
             Utility.PrintColorLine("구매하실 아이템을 선택하세요.\n", ConsoleColor.Blue);
-            
+
             Utility.PrintColorLine("0. 취소\n", ConsoleColor.Red);
             while (true)
             {
@@ -161,12 +169,47 @@ public class UIManager
                         player.Inventory.Add(item);
                         ShowShop(false, true);
                         break;
-
                     }
                 }
             }
 
             ShowShop();
+        }
+    }
+
+    private void ShowRest(bool rested = false)
+    {
+        Console.Clear();
+        Utility.PrintColorLine("휴식하기", ConsoleColor.Yellow);
+        Console.Write("500 G 를 내면 체력을 회복할 수 있습니다.\n");
+        Utility.PrintColorLine($"(보유 골드 : {player.Gold} G)\n", ConsoleColor.Yellow);
+
+        Utility.PrintColorLine("1. 휴식하기", ConsoleColor.Magenta);
+        Utility.PrintColorLine("0. 나가기\n", ConsoleColor.Magenta);
+        if (rested)
+            Utility.InfoMessage("\n휴식을 완료했습니다. ", ConsoleColor.Blue);
+        while (true)
+        {
+            if (Utility.Confirm(1, 0) == 0)
+                MainScene();
+            else
+            {
+                if (player.curHp == player.Stats.Hp)
+                {
+                    Utility.InfoMessage("이미 최대 체력입니다.");
+                }
+                else if (player.Gold >= 500)
+                {
+                    player.Gold -= 500;
+                    player.recoveryHp(100);
+                    ShowRest(true);
+                    break;
+                }
+                else
+                {
+                    Utility.InfoMessage("보유 골드가 부족합니다.");
+                }
+            }
         }
     }
 }
