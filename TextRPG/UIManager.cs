@@ -1,5 +1,3 @@
-// UIManager.cs
-
 using System.Runtime.InteropServices;
 
 namespace TextRPG;
@@ -65,13 +63,13 @@ public class UIManager
         Console.WriteLine("캐릭터의 정보가 표시됩니다.\n");
 
         Console.WriteLine($"{player.strName}: ({player.strJob})\nLv: {player.iLevel}");
-        Console.Write($"공격력: {player.Stats.Atk}");
+        Console.Write($"공격력: {player.PlayerStats.Atk}");
         if (player.AddStats.Atk > 0)
             Utility.PrintColor($" +({player.AddStats.Atk})", ConsoleColor.Yellow);
-        Console.Write($"\n방어력: {player.Stats.Def}");
+        Console.Write($"\n방어력: {player.PlayerStats.Def}");
         if (player.AddStats.Def > 0)
             Utility.PrintColor($" +({player.AddStats.Def})", ConsoleColor.Yellow);
-        Console.Write($"\n체력: {player.Stats.Hp}");
+        Console.Write($"\n체력:  {player.fCurHp}/{player.PlayerStats.Hp} ");
         if (player.AddStats.Hp > 0)
             Utility.PrintColor($" +({player.AddStats.Hp})", ConsoleColor.Yellow);
 
@@ -293,7 +291,7 @@ public class UIManager
                 MainScene();
             else
             {
-                if (player.iCurHp <= 0)
+                if (player.fCurHp <= 0)
                 {
                     Utility.InfoMessage("체력이 부족합니다. 휴식 후 도전하세요.");
                     continue;
@@ -316,8 +314,8 @@ public class UIManager
 
     private int ResultHpCalc(int diffculty)
     {
-        int min = 20 + (dungeonDef[diffculty] - player.GetStats().Def);
-        int max = 35 + (dungeonDef[diffculty] - player.GetStats().Def);
+        int min = 20 + (int)(dungeonDef[diffculty] - player.GetStats().Def);
+        int max = 35 + (int)(dungeonDef[diffculty] - player.GetStats().Def);
         int rand = new Random().Next(min, max);
         return -rand;
     }
@@ -326,8 +324,8 @@ public class UIManager
     {
         int[] reward = new int[] { 1000, 1700, 2500 };
 
-        int min = player.GetStats().Atk; //(공격력 ~ 공겨력*2)% 추가보상
-        int max = player.GetStats().Atk * 2;
+        int min = (int)player.GetStats().Atk; //(공격력 ~ 공겨력*2)% 추가보상
+        int max = (int)player.GetStats().Atk * 2;
         float rand = new Random().Next(min, max) / 100.0f;
         return reward[diffculty] + (int)(reward[diffculty] * rand);
     }
@@ -340,14 +338,18 @@ public class UIManager
 
         Utility.PrintColorLine("[탐험 결과]", ConsoleColor.Yellow);
 
-        int preHp = player.iCurHp;
+        float preHp = player.fCurHp;
         player.AddHp(ResultHpCalc(diffculty));
-        Console.WriteLine($"체력 {preHp} -> {player.iCurHp}");
+        Console.WriteLine($"체력 {preHp} -> {player.fCurHp}");
 
         int preGold = player.iGold;
         player.AddGold(ResultGoldCalc(diffculty));
         Console.WriteLine($"Gold {preGold} G -> {player.iGold} G");
+        if(player.LevelUp())
+            Utility.PrintColorLine($"레벨업 lv.{player.iLevel-1} -> lv.{player.iLevel}", ConsoleColor.Cyan);
         Console.WriteLine();
+        
+        
 
         Utility.PrintColorLine("0. 나가기\n", ConsoleColor.Magenta);
         int input = Utility.Confirm(3, 0);
@@ -364,9 +366,9 @@ public class UIManager
 
         Utility.PrintColorLine("[탐험 결과]", ConsoleColor.Yellow);
 
-        int preHp = player.iCurHp;
-        player.AddHp(-(player.GetStats().Hp / 2)); //최대의 체력 절반 감소
-        Console.WriteLine($"체력 {preHp} -> {player.iCurHp}");
+        float preHp = player.fCurHp;
+        player.AddHp(-(player.GetStats().Hp / 2.0f)); //최대의 체력 절반 감소
+        Console.WriteLine($"체력 {preHp} -> {player.fCurHp}");
 
         Console.WriteLine();
 
@@ -399,7 +401,7 @@ public class UIManager
                 MainScene();
             else
             {
-                if (player.iCurHp == player.GetStats().Hp)
+                if (player.fCurHp == player.GetStats().Hp)
                 {
                     Utility.InfoMessage("이미 최대 체력입니다.");
                 }

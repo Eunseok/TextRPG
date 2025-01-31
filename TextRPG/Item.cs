@@ -1,7 +1,11 @@
-// Item.cs
 namespace TextRPG;
 
-public enum ItemType { Armor, Weapon, Accessory }
+public enum ItemType
+{
+    Armor,
+    Weapon,
+    Accessory
+}
 
 public class Item
 {
@@ -9,7 +13,7 @@ public class Item
     public string strName { get; set; }
     public ItemType Type { get; set; }
     public string strDescription { get; set; }
-    public int iEffect { get; set; }
+    public float iEffect { get; set; }
     public int iPrice { get; set; }
     public bool isEquipped { get; set; }
 

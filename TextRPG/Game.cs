@@ -1,4 +1,3 @@
-// Game.cs
 namespace TextRPG;
 
 public class Game

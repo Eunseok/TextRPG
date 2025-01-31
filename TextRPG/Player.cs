@@ -1,16 +1,14 @@
-// Player.cs
-
 namespace TextRPG;
 
 // 플레이어의 스탯을 구조체로 관리
 public struct Stats
 {
-    public int Atk { get; set; } // 공격력
-    public int Def { get; set; } // 방어력
-    public int Hp { get; set; } // 체력
+    public float Atk { get; set; } // 공격력
+    public float Def { get; set; } // 방어력
+    public float Hp { get; set; } // 체력
 
     // 생성자 (초기값 설정)
-    public Stats(int atk, int def, int hp)
+    public Stats(float atk, float def, float hp)
     {
         this.Atk = atk;
         this.Def = def;
@@ -24,8 +22,10 @@ public class Player
     public string strJob { get; private set; }
     public int iGold { get;  private set; } = 1500;
     public int iLevel { get; private set; } = 1;
-    public int iCurHp { get; private set; } = 100;
-    public Stats Stats { get; private set; } = new Stats(10, 5, 100);
+    public float fCurHp { get; private set; } = 100;
+    public int iExp { get; private set; } = 0;
+    public int iMaxExp { get; private set; } = 1;
+    public Stats PlayerStats { get; private set; } = new Stats(10, 5, 100);
     public Stats AddStats { get; private set; } = new Stats(0, 0, 0);
     public List<Item> Inventory { get; private set; } = new List<Item>();
 
@@ -102,18 +102,32 @@ public class Player
         iGold += gold;
     }
 
-    public void AddHp(int hp)
+    public void AddHp(float hp)
     {
-        iCurHp += hp;
-        if (iCurHp > Stats.Hp)
-            iCurHp = Stats.Hp;
-        else if (iCurHp < 0)
-            iCurHp = 0;
+        fCurHp += hp;
+        if (fCurHp > GetStats().Hp)
+            fCurHp = GetStats().Hp;
+        else if (fCurHp < 0)
+            fCurHp = 0;
     }
+    
+
+    public bool LevelUp()   //레벨업
+    {
+        if (++iExp >= iMaxExp)
+        {
+            iExp -= iMaxExp++;
+            iLevel++;
+            PlayerStats = new Stats(PlayerStats.Atk + 0.5f, PlayerStats.Def + 1.0f, PlayerStats.Hp + 5.0f);
+            return true;
+        }
+        return false;
+    }
+
 
     public Stats GetStats()
     {
-        Stats stats = new Stats(Stats.Atk + AddStats.Atk, Stats.Def + AddStats.Def, Stats.Hp + AddStats.Hp);
+        Stats stats = new Stats(PlayerStats.Atk + AddStats.Atk, PlayerStats.Def + AddStats.Def, PlayerStats.Hp + AddStats.Hp);
         return stats;
     }
 }

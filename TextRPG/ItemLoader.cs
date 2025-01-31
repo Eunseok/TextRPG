@@ -1,4 +1,3 @@
-// ItemLoader.cs
 using Newtonsoft.Json;
 
 namespace TextRPG;

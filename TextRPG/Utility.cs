@@ -1,5 +1,3 @@
-// Utility.cs
-
 namespace TextRPG;
 
 public static class Utility
