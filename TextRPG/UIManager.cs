@@ -1,5 +1,7 @@
 // UIManager.cs
 
+using System.Runtime.InteropServices;
+
 namespace TextRPG;
 
 public class UIManager
@@ -8,6 +10,10 @@ public class UIManager
     private Game game;
 
     public List<Item> ShopInventory { get; set; }
+
+
+    private string[] dungeonDiff = new string[] { "쉬운 던전", "일반 던전", "어려운 던전" };
+    int[] dungeonDef = { 5, 11, 17 }; //요구 방어력
 
     public UIManager(Player player, Game game)
     {
@@ -44,7 +50,7 @@ public class UIManager
                 ShowShop();
                 break;
             case 4:
-                MainScene();
+                DungeonEntry();
                 break;
             case 5:
                 ShowRest();
@@ -58,7 +64,7 @@ public class UIManager
         Utility.PrintColorLine("상태 보기", ConsoleColor.Yellow);
         Console.WriteLine("캐릭터의 정보가 표시됩니다.\n");
 
-        Console.WriteLine($"{player.Name}: ({player.Job})\nLv: {player.Level}");
+        Console.WriteLine($"{player.strName}: ({player.strJob})\nLv: {player.iLevel}");
         Console.Write($"공격력: {player.Stats.Atk}");
         if (player.AddStats.Atk > 0)
             Utility.PrintColor($" +({player.AddStats.Atk})", ConsoleColor.Yellow);
@@ -71,8 +77,9 @@ public class UIManager
 
         Console.WriteLine("\n");
         Utility.PrintColorLine("0. 나가기\n", ConsoleColor.Magenta);
-        Utility.Confirm(0, 0);
-        MainScene();
+
+        if (Utility.Confirm(0, 0) == 0)
+            MainScene();
     }
 
     private void ShowInventory() // 인벤토리
@@ -84,7 +91,7 @@ public class UIManager
         for (int i = 0; i < player.Inventory.Count; i++)
         {
             Utility.PrintColor($"{i + 1}. ", ConsoleColor.Magenta);
-            if (player.Inventory[i].IsEquipped)
+            if (player.Inventory[i].isEquipped)
                 Console.Write("[E] ");
             Console.WriteLine(player.Inventory[i]);
         }
@@ -111,7 +118,7 @@ public class UIManager
         Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.\n");
 
         Console.WriteLine("[보유 골드]");
-        Utility.PrintColorLine($"{player.Gold} G\n", ConsoleColor.Yellow);
+        Utility.PrintColorLine($"{player.iGold} G\n", ConsoleColor.Yellow);
 
         int index = 0;
         foreach (Item item in ShopInventory)
@@ -119,12 +126,12 @@ public class UIManager
             Console.Write("- ");
             Utility.PrintColor($"{index + 1}. ", ConsoleColor.Magenta);
             Console.Write(item);
-            if (player.Inventory.Find(x => x.Id == item.Id) != null)
+            if (player.Inventory.Find(x => x.ID == item.ID) != null)
                 Console.WriteLine(" [구매완료]");
-            else if (player.Gold < item.Price)
-                Utility.PrintColorLine($" ({item.Price} G)");
+            else if (player.iGold < item.iPrice)
+                Utility.PrintColorLine($" ({item.iPrice} G)");
             else
-                Utility.PrintColorLine($" ({item.Price} G)", ConsoleColor.Yellow);
+                Utility.PrintColorLine($" ({item.iPrice} G)", ConsoleColor.Yellow);
             index++;
         }
 
@@ -159,6 +166,9 @@ public class UIManager
         Console.Clear();
         Utility.PrintColorLine("상점 - 아이템 구매", ConsoleColor.Yellow);
         Console.WriteLine("구매하실 아이템을 선택하세요.\n");
+        
+        Console.WriteLine("[보유 골드]");
+        Utility.PrintColorLine($"{player.iGold} G\n", ConsoleColor.Yellow);
 
         int index = 0;
         foreach (Item item in ShopInventory)
@@ -166,12 +176,12 @@ public class UIManager
             Console.Write("- ");
             Utility.PrintColor($"{index + 1}. ", ConsoleColor.Magenta);
             Console.Write(item);
-            if (player.Inventory.Find(x => x.Id == item.Id) != null)
+            if (player.Inventory.Find(x => x.ID == item.ID) != null)
                 Console.WriteLine(" [구매완료]");
-            else if (player.Gold < item.Price)
-                Utility.PrintColorLine($" ({item.Price} G)");
+            else if (player.iGold < item.iPrice)
+                Utility.PrintColorLine($" ({item.iPrice} G)");
             else
-                Utility.PrintColorLine($" ({item.Price} G)", ConsoleColor.Yellow);
+                Utility.PrintColorLine($" ({item.iPrice} G)", ConsoleColor.Yellow);
             index++;
         }
 
@@ -187,17 +197,17 @@ public class UIManager
             else
             {
                 Item item = ShopInventory[input - 1];
-                if (player.Inventory.Find(x => x.Id == item.Id) != null)
+                if (player.Inventory.Find(x => x.ID == item.ID) != null)
                 {
                     Utility.InfoMessage("이미 보유한 아이템 입니다.");
                 }
-                else if (player.Gold < item.Price)
+                else if (player.iGold < item.iPrice)
                 {
                     Utility.InfoMessage("보유 골드가 부족합니다.");
                 }
                 else
                 {
-                    player.Gold -= item.Price;
+                    player.AddGold(-item.iPrice);
                     player.Inventory.Add(item);
                     ShowShop("구매를 완료하였습니다.");
                     break;
@@ -214,6 +224,9 @@ public class UIManager
             Console.WriteLine("보유하신 아이템이 없습니다.");
         else
             Console.WriteLine("판매하실 아이템을 선택하세요.\n");
+        
+        Console.WriteLine("[보유 골드]");
+        Utility.PrintColorLine($"{player.iGold} G\n", ConsoleColor.Yellow);
 
         int index = 0;
         foreach (Item item in player.Inventory)
@@ -221,7 +234,7 @@ public class UIManager
             Console.Write("- ");
             Utility.PrintColor($"{index + 1}. ", ConsoleColor.Magenta);
             Console.Write(item);
-            Utility.PrintColorLine($" (+{(int)(item.Price * 0.85f)} G)", ConsoleColor.Yellow);
+            Utility.PrintColorLine($" (+{(int)(item.iPrice * 0.85f)} G)", ConsoleColor.Yellow);
 
             index++;
         }
@@ -240,14 +253,133 @@ public class UIManager
             {
                 Item item = player.Inventory[input - 1];
 
-                if (item.IsEquipped)
+                if (item.isEquipped)
                     player.EquipItem(item);
-                player.Gold += (int)(item.Price * 0.85f);
+                player.AddGold((int)(item.iPrice * 0.85f));
                 player.Inventory.Remove(item);
-                ShowShop($"판매를 완료하였습니다.(+{(int)(item.Price * 0.85f)} G)");
+                ShowShop($"판매를 완료하였습니다.(+{(int)(item.iPrice * 0.85f)} G)");
                 break;
             }
         }
+    }
+
+
+    private void DungeonEntry()
+    {
+        Console.Clear();
+        Utility.PrintColorLine("던전 입장", ConsoleColor.Yellow);
+        Console.WriteLine("이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.\n");
+
+
+        for (int i = 0; i < 3; i++)
+        {
+            Utility.PrintColor($"{i + 1}. ", ConsoleColor.Magenta);
+            if (player.GetStats().Def >= dungeonDef[i])
+                Console.WriteLine($"{dungeonDiff[i]} | 방어력 {dungeonDef[i]} 이상 권장");
+            else
+                Utility.PrintColorLine($"{dungeonDiff[i]} | 방어력 {dungeonDef[i]} 이상 권장");
+        }
+
+        Console.WriteLine();
+
+
+        Utility.PrintColorLine("0. 나가기\n", ConsoleColor.Magenta);
+
+        while (true)
+        {
+            int input = Utility.Confirm(3, 0);
+
+            if (input == 0)
+                MainScene();
+            else
+            {
+                if (player.iCurHp <= 0)
+                {
+                    Utility.InfoMessage("체력이 부족합니다. 휴식 후 도전하세요.");
+                    continue;
+                }
+
+                if (player.GetStats().Def < dungeonDef[input - 1])
+                {
+                    int rand = new Random().Next(0, 100);
+                    if (rand < 40)
+                    {
+                        DungeonDefeated();
+                        return;
+                    }
+                }
+
+                DungeonClear(input - 1);
+            }
+        }
+    }
+
+    private int ResultHpCalc(int diffculty)
+    {
+        int min = 20 + (dungeonDef[diffculty] - player.GetStats().Def);
+        int max = 35 + (dungeonDef[diffculty] - player.GetStats().Def);
+        int rand = new Random().Next(min, max);
+        return -rand;
+    }
+
+    private int ResultGoldCalc(int diffculty)
+    {
+        int[] reward = new int[] { 1000, 1700, 2500 };
+
+        int min = player.GetStats().Atk; //(공격력 ~ 공겨력*2)% 추가보상
+        int max = player.GetStats().Atk * 2;
+        float rand = new Random().Next(min, max) / 100.0f;
+        return reward[diffculty] + (int)(reward[diffculty] * rand);
+    }
+
+    private void DungeonClear(int diffculty = 0)
+    {
+        Console.Clear();
+        Utility.PrintColorLine("던전 클리어", ConsoleColor.Yellow);
+        Console.WriteLine($" 축하합니다!!\n{dungeonDiff[diffculty]}을 클리어 하였습니다.\n");
+
+        Utility.PrintColorLine("[탐험 결과]", ConsoleColor.Yellow);
+
+        int preHp = player.iCurHp;
+        player.AddHp(ResultHpCalc(diffculty));
+        Console.WriteLine($"체력 {preHp} -> {player.iCurHp}");
+
+        int preGold = player.iGold;
+        player.AddGold(ResultGoldCalc(diffculty));
+        Console.WriteLine($"Gold {preGold} G -> {player.iGold} G");
+        Console.WriteLine();
+
+        Utility.PrintColorLine("0. 나가기\n", ConsoleColor.Magenta);
+        int input = Utility.Confirm(3, 0);
+
+        if (input == 0)
+            MainScene();
+    }
+
+    private void DungeonDefeated()
+    {
+        Console.Clear();
+        Utility.PrintColorLine("던전 실패", ConsoleColor.Red);
+        Console.WriteLine("아쉽게도 실패 했습니다\n다음에 다시 도전하세요.\n");
+
+        Utility.PrintColorLine("[탐험 결과]", ConsoleColor.Yellow);
+
+        int preHp = player.iCurHp;
+        player.AddHp(-(player.GetStats().Hp / 2)); //최대의 체력 절반 감소
+        Console.WriteLine($"체력 {preHp} -> {player.iCurHp}");
+
+        Console.WriteLine();
+
+        Utility.PrintColorLine("0. 나가기\n", ConsoleColor.Magenta);
+        int input = Utility.Confirm(3, 0);
+
+        if (input == 0)
+            MainScene();
+    }
+
+    private bool ClearRand(int diffculty) // 클리어 계산
+    {
+        return false;
     }
 
     private void ShowRest(bool rested = false)
@@ -255,7 +387,7 @@ public class UIManager
         Console.Clear();
         Utility.PrintColorLine("휴식하기", ConsoleColor.Yellow);
         Console.Write("500 G 를 내면 체력을 회복할 수 있습니다.\n");
-        Utility.PrintColorLine($"(보유 골드 : {player.Gold} G)\n", ConsoleColor.Yellow);
+        Utility.PrintColorLine($"(보유 골드 : {player.iGold} G)\n", ConsoleColor.Yellow);
 
         Utility.PrintColorLine("1. 휴식하기", ConsoleColor.Magenta);
         Utility.PrintColorLine("0. 나가기\n", ConsoleColor.Magenta);
@@ -267,14 +399,14 @@ public class UIManager
                 MainScene();
             else
             {
-                if (player.curHp == player.Stats.Hp)
+                if (player.iCurHp == player.GetStats().Hp)
                 {
                     Utility.InfoMessage("이미 최대 체력입니다.");
                 }
-                else if (player.Gold >= 500)
+                else if (player.iGold >= 500)
                 {
-                    player.Gold -= 500;
-                    player.recoveryHp(100);
+                    player.AddGold(-500);
+                    player.AddHp(100);
                     ShowRest(true);
                     break;
                 }

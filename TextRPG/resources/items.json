@@ -1,75 +1,75 @@
 // 0 : Armor , 1: Weapon, 2: Accessory
 [
   {
-    "Id": 1,
-    "Name": "수련자 갑옷",
+    "ID": 1,
+    "strName": "수련자 갑옷",
     "Type": 0,
-    "Description": "수련에 도움을 주는 갑옷입니다.",
-    "Effect": 5,
-    "Price" : 1000
+    "strDescription": "수련에 도움을 주는 갑옷입니다.",
+    "iEffect": 5,
+    "iPrice" : 1000
   },
   {
-    "Id": 2,
-    "Name": "무쇠 갑옷",
+    "ID": 2,
+    "strName": "무쇠 갑옷",
     "Type": 0,
-    "Description": "무쇠로 만들어져 튼튼한 갑옷입니다.",
-    "Effect": 9,
-    "Price" : 2000
+    "strDescription": "무쇠로 만들어져 튼튼한 갑옷입니다.",
+    "iEffect": 9,
+    "iPrice" : 2000
   },
   {
-    "Id": 3,
-    "Name": "스파르타의 갑옷",
+    "ID": 3,
+    "strName": "스파르타의 갑옷",
     "Type": 0,
-    "Description": "스파르타의 전사들이 사용했다는 전설의 갑옷입니다.",
-    "Effect": 15,
-    "Price": 3500
+    "strDescription": "스파르타의 전사들이 사용했다는 전설의 갑옷입니다.",
+    "iEffect": 15,
+    "iPrice": 3500
   },
   {
-    "Id": 4,
-    "Name": "낡은 검",
+    "ID": 4,
+    "strName": "낡은 검",
     "Type": 1,
-    "Description": "쉽게 볼 수 있는 낡은 검 입니다.",
-    "Effect": 2,
-    "Price": 600
+    "strDescription": "쉽게 볼 수 있는 낡은 검 입니다.",
+    "iEffect": 2,
+    "iPrice": 600
   },
   {
-    "Id": 5,
-    "Name": "청동 도끼",
+    "ID": 5,
+    "strName": "청동 도끼",
     "Type": 1,
-    "Description": "스파르타의 전사들이 사용했다는 전설의 창입니다.",
-    "Effect": 5,
-    "Price": 1500
+    "strDescription": "스파르타의 전사들이 사용했다는 전설의 창입니다.",
+    "iEffect": 5,
+    "iPrice": 1500
   },
   {
-    "Id": 6,
-    "Name": "스파르타의 창",
+    "ID": 6,
+    "strName": "스파르타의 창",
     "Type": 1,
-    "Description": "스파르타의 전사들이 사용했다는 전설의 창입니다.",
-    "Effect": 7,
-    "Price": 1800
+    "strDescription": "스파르타의 전사들이 사용했다는 전설의 창입니다.",
+    "iEffect": 7,
+    "iPrice": 1800
   },
   {
-    "Id": 7,
-    "Name": "은반지",
+    "ID": 7,
+    "strName": "은반지",
     "Type": 2,
-    "Description": "마법이 깃든 은반지로 체력을 증가시킵니다.",
-    "Effect": 10,
-    "Price": 1200
+    "strDescription": "마법이 깃든 은반지로 체력을 증가시킵니다.",
+    "iEffect": 10,
+    "iPrice": 1200
   },
   {
-    "Id": 8,
-    "Name": "사파이어 목걸이",
+    "ID": 8,
+    "strName": "사파이어 목걸이",
     "Type": 2,
-    "Description": "푸른 사파이어가 박힌 목걸이로 체력을 증가시킵니다.",
-    "Effect": 15,
-    "Price": 2000
+    "strDescription": "푸른 사파이어가 박힌 목걸이로 체력을 증가시킵니다.",
+    "iEffect": 15,
+    "iPrice": 2000
   },
   {
-    "Id": 9,
-    "Name": "신의 축복 팔찌",
+    "ID": 9,
+    "strName": "신의 축복 팔찌",
     "Type": 2,
-    "Description": "신의 축복을 받아 체력을 대폭 증가시킵니다.",
-    "Effect": 25,
-    "Price": 3500
+    "strDescription": "신의 축복을 받아 체력을 대폭 증가시킵니다.",
+    "iEffect": 25,
+    "iPrice": 3500
   }
 ]

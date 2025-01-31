@@ -20,11 +20,11 @@ public struct Stats
 
 public class Player
 {
-    public string Name { get; private set; }
-    public string Job { get; private set; }
-    public int Gold { get;  set; } = 15000;
-    public int Level { get; private set; } = 1;
-    public int curHp { get; private set; } = 100;
+    public string strName { get; private set; }
+    public string strJob { get; private set; }
+    public int iGold { get;  private set; } = 1500;
+    public int iLevel { get; private set; } = 1;
+    public int iCurHp { get; private set; } = 100;
     public Stats Stats { get; private set; } = new Stats(10, 5, 100);
     public Stats AddStats { get; private set; } = new Stats(0, 0, 0);
     public List<Item> Inventory { get; private set; } = new List<Item>();
@@ -40,7 +40,7 @@ public class Player
 
         if (!string.IsNullOrEmpty(name) &&
             Utility.Save($"선택하신 이름은 \"{name}\" 입니다.\n"))
-            Name = name;
+            strName = name;
         else
             CreateName();
     }
@@ -57,25 +57,25 @@ public class Player
 
         int choice = Utility.Confirm(jobType.Length);
         if (Utility.Save($"선택하신 직업은 \"{jobType[choice - 1]}\" 입니다.\n"))
-            Job = jobType[choice - 1];
+            strJob = jobType[choice - 1];
         else
             CreateJob();
     }
     
     public void EquipItem(Item item)
     {
-        int effectModifier = item.IsEquipped ? -1 : 1; // 장착이면 해제후 스텟 감소, 해제면 장착 후 스탯 증가
+        int effectModifier = item.isEquipped ? -1 : 1; // 장착이면 해제후 스텟 감소, 해제면 장착 후 스탯 증가
         if (effectModifier > 0) // 이미 창작한 기본의 같은 타입 아이템 해제
         {
             foreach (Item equItem in Inventory)
             {
-                if (equItem.Type == item.Type && equItem.IsEquipped)  //같은 타입의 아이템이 있고, 창착 중이라면
+                if (equItem.Type == item.Type && equItem.isEquipped)  //같은 타입의 아이템이 있고, 창착 중이라면
                     EquipItem(equItem);
             }
             
         }
         
-        item.IsEquipped = !item.IsEquipped; // 장착 여부 토글
+        item.isEquipped = !item.isEquipped; // 장착 여부 토글
         
     
         ApplyItemEffect(item, effectModifier);
@@ -86,22 +86,34 @@ public class Player
         switch (item.Type)
         {
             case ItemType.Armor:
-                AddStats = new Stats(AddStats.Atk, AddStats.Def + (modifier * item.Effect), AddStats.Hp);
+                AddStats = new Stats(AddStats.Atk, AddStats.Def + (modifier * item.iEffect), AddStats.Hp);
                 break;
             case ItemType.Weapon:
-                AddStats = new Stats(AddStats.Atk + (modifier * item.Effect), AddStats.Def, AddStats.Hp);
+                AddStats = new Stats(AddStats.Atk + (modifier * item.iEffect), AddStats.Def, AddStats.Hp);
                 break;
             case ItemType.Accessory:
-                AddStats = new Stats(AddStats.Atk, AddStats.Def, AddStats.Hp + (modifier * item.Effect));
+                AddStats = new Stats(AddStats.Atk, AddStats.Def, AddStats.Hp + (modifier * item.iEffect));
                 break;
         }
     }
     
-    public void recoveryHp(int effect)
+    public void AddGold(int gold)
     {
-        curHp += effect;
-        if (curHp > Stats.Hp)
-            curHp = Stats.Hp;
+        iGold += gold;
     }
-    
+
+    public void AddHp(int hp)
+    {
+        iCurHp += hp;
+        if (iCurHp > Stats.Hp)
+            iCurHp = Stats.Hp;
+        else if (iCurHp < 0)
+            iCurHp = 0;
+    }
+
+    public Stats GetStats()
+    {
+        Stats stats = new Stats(Stats.Atk + AddStats.Atk, Stats.Def + AddStats.Def, Stats.Hp + AddStats.Hp);
+        return stats;
+    }
 }
