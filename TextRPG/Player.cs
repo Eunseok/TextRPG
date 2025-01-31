@@ -22,7 +22,7 @@ public class Player
 {
     public string Name { get; private set; }
     public string Job { get; private set; }
-    public int Gold { get;  set; } = 1500;
+    public int Gold { get;  set; } = 15000;
     public int Level { get; private set; } = 1;
     public int curHp { get; private set; } = 100;
     public Stats Stats { get; private set; } = new Stats(10, 5, 100);
@@ -65,8 +65,18 @@ public class Player
     public void EquipItem(Item item)
     {
         int effectModifier = item.IsEquipped ? -1 : 1; // 장착이면 해제후 스텟 감소, 해제면 장착 후 스탯 증가
-    
+        if (effectModifier > 0) // 이미 창작한 기본의 같은 타입 아이템 해제
+        {
+            foreach (Item equItem in Inventory)
+            {
+                if (equItem.Type == item.Type && equItem.IsEquipped)  //같은 타입의 아이템이 있고, 창착 중이라면
+                    EquipItem(equItem);
+            }
+            
+        }
+        
         item.IsEquipped = !item.IsEquipped; // 장착 여부 토글
+        
     
         ApplyItemEffect(item, effectModifier);
     }
