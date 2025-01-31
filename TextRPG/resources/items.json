@@ -1,4 +1,4 @@
-//0 : Armor ,1: Weapon
+// 0 : Armor , 1: Weapon, 2: Accessory
 [
   {
     "Id": 1,
@@ -10,8 +10,8 @@
   },
   {
     "Id": 2,
-    "Name": "무쇠 값옷",
-    "Type": "Armor",
+    "Name": "무쇠 갑옷",
+    "Type": 0,
     "Description": "무쇠로 만들어져 튼튼한 갑옷입니다.",
     "Effect": 9,
     "Price" : 2000
@@ -47,6 +47,29 @@
     "Description": "스파르타의 전사들이 사용했다는 전설의 창입니다.",
     "Effect": 7,
     "Price": 1800
+  },
+  {
+    "Id": 7,
+    "Name": "은반지",
+    "Type": 2,
+    "Description": "마법이 깃든 은반지로 체력을 증가시킵니다.",
+    "Effect": 10,
+    "Price": 1200
+  },
+  {
+    "Id": 8,
+    "Name": "사파이어 목걸이",
+    "Type": 2,
+    "Description": "푸른 사파이어가 박힌 목걸이로 체력을 증가시킵니다.",
+    "Effect": 15,
+    "Price": 2000
+  },
+  {
+    "Id": 9,
+    "Name": "신의 축복 팔찌",
+    "Type": 2,
+    "Description": "신의 축복을 받아 체력을 대폭 증가시킵니다.",
+    "Effect": 25,
+    "Price": 3500
   }
 ]
-

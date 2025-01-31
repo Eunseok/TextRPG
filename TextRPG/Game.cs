@@ -16,7 +16,6 @@ public class Game
     public void Start()
     {
         ItemLoader.LoadItems();
-        Console.ReadLine();
         uiManager.ShopInventory = ItemLoader.Items;
 
         player.CreateName();
