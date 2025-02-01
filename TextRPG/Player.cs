@@ -18,17 +18,18 @@ public struct Stats
 
 public class Player
 {
-    public string strName { get; private set; }
-    public string strJob { get; private set; }
-    public int iGold { get;  private set; } = 1500;
-    public int iLevel { get; private set; } = 1;
-    public float fCurHp { get; private set; } = 100;
-    public int iExp { get; private set; } = 0;
-    public int iMaxExp { get; private set; } = 1;
-    public Stats PlayerStats { get; private set; } = new Stats(10, 5, 100);
-    public Stats AddStats { get; private set; } = new Stats(0, 0, 0);
+    public string strName { get;  set; }
+    public string strJob { get;  set; }
+    public int iGold { get;   set; } = 1500;
+    public int iLevel { get;  set; } = 1;
+    public float fCurHp { get;  set; } = 100;
+    public int iExp { get;  set; } = 0;
+    public int iMaxExp { get;  set; } = 1;
+    public Stats PlayerStats { get;  set; } = new Stats(10, 5, 100);
+    public Stats AddStats { get;  set; } = new Stats(0, 0, 0);
     public List<Item> Inventory { get; private set; } = new List<Item>();
-
+    
+    
     public void CreateName()
     {
         Console.Clear();

@@ -2,23 +2,31 @@ namespace TextRPG;
 
 public class Game
 {
-    private Player player;
+    public Player player;
     private UIManager uiManager;
 
 
     public Game()
     {
-        player = new Player();
-        uiManager = new UIManager(player, this);
+        DataLoader.LoadItems();
+        
+        player = DataLoader.LoadPlayerData() ?? new Player();
+        
+        if (string.IsNullOrEmpty(player.strName))
+        {
+            player.CreateName();
+            player.CreateJob();
+        }
+        uiManager = new UIManager(player);
+        uiManager.ShopInventory = DataLoader.Items;
     }
 
     public void Start()
     {
-        ItemLoader.LoadItems();
-        uiManager.ShopInventory = ItemLoader.Items;
-
-        player.CreateName();
-        player.CreateJob();
         uiManager.MainScene();
+
     }
+    
+    
+
 }

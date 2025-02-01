@@ -19,7 +19,7 @@ public class Item
 
     public override string ToString()
     {
-        string effectType = Type == ItemType.Armor ? "방어력" : Type == ItemType.Weapon ? "공격력" : "효과";
+        string effectType = Type == ItemType.Armor ? "방어력" : Type == ItemType.Weapon ? "공격력" : "체력";
         return $"{strName} ({Type}) | {effectType} +{iEffect} | {strDescription}";
     }
 }

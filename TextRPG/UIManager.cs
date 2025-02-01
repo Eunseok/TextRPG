@@ -5,7 +5,6 @@ namespace TextRPG;
 public class UIManager
 {
     private Player player;
-    private Game game;
 
     public List<Item> ShopInventory { get; set; }
 
@@ -13,11 +12,10 @@ public class UIManager
     private string[] dungeonDiff = new string[] { "쉬운 던전", "일반 던전", "어려운 던전" };
     int[] dungeonDef = { 5, 11, 17 }; //요구 방어력
 
-    public UIManager(Player player, Game game)
+    public UIManager(Player player)
     {
         this.player = player;
-        this.game = game;
-        ShopInventory = ItemLoader.Items;
+        ShopInventory = DataLoader.Items;
     }
 
     public void MainScene()
@@ -26,16 +24,17 @@ public class UIManager
         Console.WriteLine("스파르타 마을에 오신 여러분 환영합니다.");
         Console.WriteLine("이곳에서 던전으로 들어가기 전 활동을 할 수 있습니다.\n");
 
-        string[] menu = { "상태보기", "인벤토리", "상점", "던전입장", "휴식하기" };
+        string[] menu = { "상태보기", "인벤토리", "상점", "던전입장", "휴식하기"};
         for (int i = 0; i < menu.Length; i++)
         {
-            Utility.PrintColor($"{i + 1}. ", ConsoleColor.Magenta);
-            Console.WriteLine(menu[i]);
+            Utility.PrintColor($"{i + 1}.", ConsoleColor.Magenta);
+            Console.Write(menu[i]+" ");
         }
+        Console.WriteLine("\n");
+        Utility.PrintColor($"0.", ConsoleColor.Magenta);
+        Console.WriteLine("종료\n");
 
-        Console.WriteLine();
-
-        int choice = Utility.Confirm(menu.Length);
+        int choice = Utility.Confirm(menu.Length, 0);
         switch (choice)
         {
             case 1:
@@ -53,6 +52,9 @@ public class UIManager
             case 5:
                 ShowRest();
                 break;
+            case 0:
+                Environment.Exit(0);
+                break;
         }
     }
 
@@ -62,7 +64,7 @@ public class UIManager
         Utility.PrintColorLine("상태 보기", ConsoleColor.Yellow);
         Console.WriteLine("캐릭터의 정보가 표시됩니다.\n");
 
-        Console.WriteLine($"{player.strName}: ({player.strJob})\nLv: {player.iLevel}");
+        Console.WriteLine($"{player.strName}: ( {player.strJob} )\nLv: {player.iLevel}");
         Console.Write($"공격력: {player.PlayerStats.Atk}");
         if (player.AddStats.Atk > 0)
             Utility.PrintColor($" +({player.AddStats.Atk})", ConsoleColor.Yellow);
@@ -144,13 +146,13 @@ public class UIManager
         {
             case 0:
                 MainScene();
-                break;
+                return;
             case 1:
                 ShowShopPurchase();
-                break;
+                return;
             case 2:
                 ShowShopSell();
-                break;
+                return;
         }
 
         if (Utility.Confirm(2, 0) == 1)
